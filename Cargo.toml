@@ -5,5 +5,5 @@ edition = "2024"
 authors = ["imaybenero"]
 description = "A string type that can hold data which may or may not be valid UTF-8."
 license = "MIT"
-repository = "https://github.com/imaybnero/raw-string"
+repository = "https://github.com/imaybnero/rawstring"
 readme = "README.md"
