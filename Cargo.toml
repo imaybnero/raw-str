@@ -1,9 +1,9 @@
 [package]
-name = "bstring"
+name = "raw_str"
 version = "0.1.0"
 edition = "2024"
 authors = ["imaybenero"]
 description = "A string type that can hold data which may or may not be valid UTF-8."
 license = "MIT"
-repository = "https://github.com/imaybnero/rust-bstring"
+repository = "https://github.com/imaybnero/raw-string"
 readme = "README.md"

@@ -1,47 +1,47 @@
-// bstring
-//! TODO add crate level documentation
+// raw_str
+//! A string type that can hold data which may or may not be valid UTF-8.
 
-#![allow(unused)]
 #![feature(const_trait_impl, const_convert, const_cmp)]
 
-mod bstr;
-mod bstring;
+mod raw_str_imp;
+mod raw_string_imp;
 
 #[doc(inline)]
-pub use bstr::BStr;
+pub use raw_str_imp::RawStr;
 
 #[doc(inline)]
-pub use bstring::ByteString;
+pub use raw_string_imp::RawString;
 
 /// The Unicode replacement character: `�`.
 /// 
-/// This character is substituted for invalid or unrepresentable characters
-/// when converting byte strings to UTF-8 strings.
-pub const UTF8_REPLACEMENT_CHARACTER: char = '\u{FFFD}';
+/// This character replaces invalid or unrepresentable characters
+/// when converting [raw strings](RawString) to [UTF-8 strings](String).
+pub const UTF8_REPLACEMENT_CHARACTER: char = '�';
 
-/// A macro to create a [`BStr`] from an expression (usually a string literal).
+/// A macro to create a [`RawStr`] from an expression (usually a string literal).
+/// 
+/// This macro simply calls [`RawStr::new`] on the provided expression.
 /// 
 /// # Examples
 /// ```
-/// # use bstring::{BStr, bstr};
+/// # use raw_str::{RawStr, raw_str};
 /// // printing a string
-/// let bstr: &BStr = bstr!("Hello, world!");
-/// assert_eq!(bstr, "Hello, world!");
-/// assert_eq!(format!("{}", bstr), "Hello, world!");
-/// assert_eq!(format!("{:?}", bstr), "\"Hello, world!\"");
+/// let raw: &RawStr = raw_str!("Hello, world!");
+/// assert_eq!(raw, "Hello, world!");
+/// assert_eq!(format!("{}", raw), "Hello, world!");
+/// assert_eq!(format!("{:?}", raw), "\"Hello, world!\"");
 /// ```
-/// 
 /// ```
-/// # use bstring::{BStr, bstr};
+/// # use raw_str::{RawStr, raw_str};
 /// // printing an invalid utf8 string
-/// let bstr: &BStr = bstr!(&[b'a', 0xFF, b'b']);
-/// assert_eq!(bstr, b"a\xffb");
-/// assert_eq!(format!("{}", bstr), "a�b");
-/// assert_eq!(format!("{:?}", bstr), "\"a\\xffb\"");
+/// let raw: &RawStr = raw_str!(&[b'a', 0xFF, b'b']);
+/// assert_eq!(raw, b"a\xffb");
+/// assert_eq!(format!("{}", raw), "a�b");
+/// assert_eq!(format!("{:?}", raw), "\"a\\xffb\"");
 /// ```
 #[macro_export]
-macro_rules! bstr {
+macro_rules! raw_str {
 	($expr:expr) => {{
-		$crate::BStr::new($expr)
+		$crate::RawStr::new($expr)
 	}};
 }
