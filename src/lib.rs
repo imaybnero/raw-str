@@ -1,6 +1,5 @@
-// raw_str
-//! A string type that can hold data which may or may not be valid UTF-8.
-
+// rawstring
+#![doc = include_str!("../README.md")]
 #![feature(const_trait_impl, const_convert, const_cmp)]
 
 mod raw_str_imp;
@@ -16,7 +15,7 @@ pub use raw_string_imp::RawString;
 /// 
 /// This character replaces invalid or unrepresentable characters
 /// when converting [raw strings](RawString) to [UTF-8 strings](String).
-pub const UTF8_REPLACEMENT_CHARACTER: char = '�';
+pub const UNICODE_REPLACEMENT_CHARACTER: char = '�';
 
 /// A macro to create a [`RawStr`] from an expression (usually a string literal).
 /// 

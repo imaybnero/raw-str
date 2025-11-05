@@ -7,8 +7,6 @@ use std::{
 	str::Utf8Error,
 };
 
-use crate::UTF8_REPLACEMENT_CHARACTER;
-
 /// A borrowed string slice that may or may not contain valid UTF-8.
 /// 
 /// [`RawStr`] serves as an alternative to Rust's [`str`] type
@@ -97,14 +95,14 @@ impl RawStr {
 	/// ```
 	/// # use rawstring::RawStr;
 	/// let good = RawStr::new("Hello, world!");
-	/// assert!(good.to_utf8().is_ok());
+	/// assert!(good.to_utf8_checked().is_ok());
 	/// 
 	/// let bad = RawStr::new(b"abc\xFFabc");
-	/// assert!(bad.to_utf8().is_err());
+	/// assert!(bad.to_utf8_checked().is_err());
 	/// ```
 	#[inline]
 	#[must_use]
-	pub const fn to_utf8(&self) -> Result<&str, Utf8Error> {
+	pub const fn to_utf8_checked(&self) -> Result<&str, Utf8Error> {
 		str::from_utf8(&self.0)
 	}
 
@@ -122,7 +120,7 @@ impl RawStr {
 	#[inline]
 	#[must_use]
 	pub const fn is_utf8(&self) -> bool {
-		self.to_utf8().is_ok()
+		self.to_utf8_checked().is_ok()
 	}
 }
 
@@ -182,7 +180,7 @@ impl fmt::Display for RawStr {
 			for chunk in this.utf8_chunks() {
 				f.write_str(chunk.valid())?;
 				if !chunk.invalid().is_empty() {
-					f.write_char(UTF8_REPLACEMENT_CHARACTER)?;
+					f.write_char(crate::UNICODE_REPLACEMENT_CHARACTER)?;
 				}
 			}
 			Ok(())
@@ -254,6 +252,6 @@ impl<'a> const TryFrom<&'a RawStr> for &'a str {
 
 	#[inline]
 	fn try_from(this: &'a RawStr) -> Result<Self, Self::Error> {
-		this.to_utf8()
+		this.to_utf8_checked()
 	}
 }

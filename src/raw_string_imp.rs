@@ -1,7 +1,7 @@
 // raw_str::raw_string_imp
 
 use std::{
-	borrow::{Borrow, BorrowMut},
+	borrow::{Cow, Borrow, BorrowMut},
 	ops::{Deref, DerefMut},
 	string::FromUtf8Error,
 	fmt,
@@ -40,10 +40,9 @@ impl RawString {
 	}
 
 	/// Returns a reference to the inner byte slice as a [`RawStr`].
-	#[doc(hidden)]
 	#[inline]
 	#[must_use]
-	pub fn as_rawstr(&self) -> &RawStr {
+	pub fn as_ref(&self) -> &RawStr {
 		RawStr::from_bytes(&self.0)
 	}
 
@@ -51,7 +50,7 @@ impl RawString {
 	#[doc(hidden)]
 	#[inline]
 	#[must_use]
-	pub fn as_mut_rawstr(&mut self) -> &mut RawStr {
+	pub fn as_mut(&mut self) -> &mut RawStr {
 		RawStr::from_bytes_mut(&mut self.0)
 	}
 
@@ -69,8 +68,28 @@ impl RawString {
 	/// See [`String::from_utf8`].
 	#[inline]
 	#[must_use]
-	pub fn to_utf8(self) -> Result<String, FromUtf8Error> {
+	pub fn to_utf8_checked(self) -> Result<String, FromUtf8Error> {
 		String::from_utf8(self.0)
+	}
+
+	/// Converts the [`RawString`] into a [`String`] without checking for valid UTF-8.
+	/// 
+	/// # Safety
+	/// This function is unsafe because it does not check that the bytes passed
+    /// to it are valid UTF-8. See [`String::from_utf8_unchecked`].
+	#[inline]
+	#[must_use]
+	pub unsafe fn to_utf8_unchecked(self) -> String {
+		// SAFETY: safety contract is upheld by the caller
+		unsafe { String::from_utf8_unchecked(self.0) }
+	}
+
+	/// Lossily converts the [`RawString`] into a [`String`].
+	/// Invalid UTF-8 sequences are replaced with the replacement character (�).
+	#[inline]
+	#[must_use]
+	pub fn to_utf8_lossy(&self) -> Cow<'_, str> {
+		String::from_utf8_lossy(&self.0)
 	}
 
 	/// Returns `true` if the [`RawString`] contains valid UTF-8.
@@ -79,7 +98,7 @@ impl RawString {
 	#[inline]
 	#[must_use]
 	pub fn is_utf8(&self) -> bool {
-		self.as_rawstr().is_utf8()
+		self.as_ref().is_utf8()
 	}
 }
 
@@ -109,7 +128,7 @@ impl AsRef<[u8]> for RawString {
 impl AsRef<RawStr> for RawString {
 	#[inline]
 	fn as_ref(&self) -> &RawStr {
-		self.as_rawstr()
+		self.as_ref()
 	}
 }
 
@@ -123,7 +142,7 @@ impl Borrow<[u8]> for RawString {
 impl Borrow<RawStr> for RawString {
 	#[inline]
 	fn borrow(&self) -> &RawStr {
-		self.as_rawstr()
+		self.as_ref()
 	}
 }
 
@@ -137,7 +156,7 @@ impl AsMut<[u8]> for RawString {
 impl AsMut<RawStr> for RawString {
 	#[inline]
 	fn as_mut(&mut self) -> &mut RawStr {
-		self.as_mut_rawstr()
+		self.as_mut()
 	}
 }
 
@@ -151,21 +170,21 @@ impl BorrowMut<[u8]> for RawString {
 impl BorrowMut<RawStr> for RawString {
 	#[inline]
 	fn borrow_mut(&mut self) -> &mut RawStr {
-		self.as_mut_rawstr()
+		self.as_mut()
 	}
 }
 
 impl fmt::Debug for RawString {
 	#[inline]
 	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-		self.as_rawstr().fmt(f)
+		self.as_ref().fmt(f)
 	}
 }
 
 impl fmt::Display for RawString {
 	#[inline]
 	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-		self.as_rawstr().fmt(f)
+		self.as_ref().fmt(f)
 	}
 }
 
