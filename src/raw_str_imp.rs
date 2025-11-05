@@ -1,4 +1,4 @@
-// raw_str::raw_str_imp
+// raw_string::raw_str_imp
 
 use std::{
 	cmp::Ordering,
@@ -22,7 +22,7 @@ use crate::UTF8_REPLACEMENT_CHARACTER;
 /// 
 /// Basic usage:
 /// ```
-/// # use raw_str::RawStr;
+/// # use raw_string::RawStr;
 /// let str = "Hello, world!";
 /// let raw = RawStr::new(str);
 /// assert_eq!(raw, str);
@@ -37,7 +37,7 @@ impl RawStr {
 	/// 
 	/// # Examples
 	/// ```
-	/// # use raw_str::RawStr;
+	/// # use raw_string::RawStr;
 	/// let raw: &RawStr = RawStr::new("Hello, world!");
 	/// assert_eq!(raw, b"Hello, world!");
 	/// ```
@@ -55,7 +55,7 @@ impl RawStr {
 	/// 
 	/// # Examples
 	/// ```
-	/// # use raw_str::RawStr;
+	/// # use raw_string::RawStr;
 	/// let mut data = *b"hello";
 	/// let raw = RawStr::new_mut(&mut data);
 	/// raw[0] = b'H';
@@ -95,7 +95,7 @@ impl RawStr {
 	/// 
 	/// # Examples
 	/// ```
-	/// # use raw_str::RawStr;
+	/// # use raw_string::RawStr;
 	/// let good = RawStr::new("Hello, world!");
 	/// assert!(good.to_utf8().is_ok());
 	/// 
@@ -112,7 +112,7 @@ impl RawStr {
 	/// 
 	/// # Examples
 	/// ```
-	/// # use raw_str::RawStr;
+	/// # use raw_string::RawStr;
 	/// let good = RawStr::new("Hello, world!");
 	/// assert!(good.is_utf8());
 	/// 
